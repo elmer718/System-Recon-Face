@@ -1,0 +1,37 @@
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-4 text-center">
+                <h2>Bienvenido</h2>
+
+                <!-- Mostrar solo los datos del usuario que acaba de ingresar -->
+                <div class="user-info">
+                    <h4>Datos del Usuario</h4>
+                    <p><strong>Nombre:</strong> {{ user_data['name'] }}</p>
+                    <p><strong>Identificación:</strong> {{ user_data['id'] }}</p>
+                    <p><strong>Último Ingreso:</strong> {{ user_data['last_login'] }}</p>
+                    <img src="{{ url_for('static', filename='uploads/' + user_data['id'] + '.png') }}" alt="Imagen del Usuario" class="img-thumbnail" width="320" height="240">
+                </div>
+
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Cerrar Sesión</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>

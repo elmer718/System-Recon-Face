@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario - Reconocimiento Facial</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <h2 class="text-center mb-4">Registro de Usuario</h2>
+
+                <form action="/register" method="POST">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    
+                    <!-- Div para mostrar la cámara y capturar la imagen -->
+                    <div class="form-group">
+                        <label for="camera">Capturar imagen</label>
+                        <video id="camera" width="320" height="240" autoplay></video>
+                        <input type="hidden" id="image" name="image">
+                        <!--
+                        <button type="button" class="btn btn-primary" onclick="captureImage()">Capturar</button>
+                        -->
+                    </div>
+
+                    <button type="submit" class="btn btn-success" id="capture">Iniciar sesión</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Código para capturar la imagen de la cámara
+        const video = document.getElementById('camera');
+        
+        // Acceder a la cámara
+        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+            video.srcObject = stream;
+        });
+
+        document.getElementById('capture').addEventListener('click', function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const dataUrl = canvas.toDataURL('image/png');
+            document.getElementById('image').value = dataUrl;
+            document.querySelector('form').submit();
+        });
+    </script>
+    
+    <!-- Bootstrap JS y Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
