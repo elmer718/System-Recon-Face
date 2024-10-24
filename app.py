@@ -34,18 +34,19 @@ def login_face():
     if request.method == 'POST':
         image_data = request.form['image']
         frame = decode_image(image_data)
-        face_login = None
-        
+        #face_login = None
+
         # Detectar el rostro
         detector = MTCNN()
         results = detector.detect_faces(frame)
-        if not results:
+        if results:
             # odtener face de la imagen
             for result in results:
                 x, y, width, height = result['box']  # Obtiene las coordenadas y tamaño del rostro
                 x, y = abs(x), abs(y)  # Asegúrate de que las coordenadas sean positivas
                 # Extrae el rostro de la imagen
                 face_login = frame[y:y + height, x:x + width]
+        else:
             flash('No se detectó ningún rostro. Intente de nuevo.')
             return render_template('login.html')
 
@@ -87,7 +88,7 @@ def register_face():
         detector = MTCNN()
         results = detector.detect_faces(frame)
         if results:
-            # Guardar imagen de registro
+            
             username = request.form['user_id']
             
             # odtener face de la imagen
@@ -100,7 +101,8 @@ def register_face():
                 # Guarda el rostro como una nueva imagen
                 save_face_path = f"static/faces/{username}.jpg"
                 cv2.imwrite(save_face_path, face)
-                
+            
+            # Guardar imagen de registro
             save_image_path = f"static/uploads/{username}.jpg"
             cv2.imwrite(save_image_path, frame)
             flash('Registro exitoso')
