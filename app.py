@@ -34,14 +34,29 @@ def login_face():
     if request.method == 'POST':
         image_data = request.form['image']
         frame = decode_image(image_data)
+        face_login = None
+        
+        # Detectar el rostro
+        detector = MTCNN()
+        results = detector.detect_faces(frame)
+        if not results:
+            # odtener face de la imagen
+            for result in results:
+                x, y, width, height = result['box']  # Obtiene las coordenadas y tamaño del rostro
+                x, y = abs(x), abs(y)  # Asegúrate de que las coordenadas sean positivas
+                # Extrae el rostro de la imagen
+                face_login = frame[y:y + height, x:x + width]
+            flash('No se detectó ningún rostro. Intente de nuevo.')
+            return render_template('login.html')
 
         username = request.form['user_id']
-        saved_image_path = f"static/faces/{username}.jpg"
+        saved_image_path = f"static/uploads/{username}.jpg"
+        saved_face_path = f"static/faces/{username}.jpg"
         
         if os.path.exists(saved_image_path):
             # Comparar rostros usando ORB
-            saved_image = cv2.imread(saved_image_path, 0)
-            login_image_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            saved_image = cv2.imread(saved_face_path, 0)
+            login_image_gray = cv2.cvtColor(face_login, cv2.COLOR_BGR2GRAY)
             similarity = orb_sim(saved_image, login_image_gray)
 
             if similarity >= 0.95:
@@ -55,7 +70,8 @@ def login_face():
                 
                 return redirect(url_for('dashboard'))
             else:
-                return "Rostro no coincide. Intente de nuevo."
+                flash('Rostro no coincide. Intente de nuevo.')
+                return render_template('login.html')
         else:
             flash('Usuario no encontrado')
             return render_template('login.html')
@@ -73,8 +89,20 @@ def register_face():
         if results:
             # Guardar imagen de registro
             username = request.form['user_id']
-            save_path = f"static/faces/{username}.jpg"
-            cv2.imwrite(save_path, frame)
+            
+            # odtener face de la imagen
+            for result in results:
+                x, y, width, height = result['box']  # Obtiene las coordenadas y tamaño del rostro
+                x, y = abs(x), abs(y)  # Asegúrate de que las coordenadas sean positivas
+                # Extrae el rostro de la imagen
+                face = frame[y:y + height, x:x + width]
+
+                # Guarda el rostro como una nueva imagen
+                save_face_path = f"static/faces/{username}.jpg"
+                cv2.imwrite(save_face_path, face)
+                
+            save_image_path = f"static/uploads/{username}.jpg"
+            cv2.imwrite(save_image_path, frame)
             flash('Registro exitoso')
             return redirect(url_for('index'))
         else:
