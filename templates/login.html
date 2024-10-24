@@ -1,10 +1,11 @@
-<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login Facial</title>
+    
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -13,7 +14,17 @@
             <div class="col-md-4 text-center">
 
                 <h2>Iniciar sesión</h2>
-                <form method="POST" action="/login">
+
+                <!-- Mensaje de alerta -->
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <div class="alert alert-success">
+                      {{ messages[0] }}
+                    </div>
+                  {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="/login_face">
                     <div class="form-group">
                         <label for="user_id">Usuario</label>
                         <input type="text" class="form-control" id="user_id" name="user_id" required>
@@ -24,16 +35,14 @@
                         <label for="camera">Capturar imagen</label>
                         <video id="camera" width="320" height="240" autoplay></video>
                         <input type="hidden" id="image" name="image">
-                        <!--
-                        <button type="button" class="btn btn-primary" onclick="captureImage()">Capturar</button>
-                        -->
                     </div>
 
                     <button type="submit" class="btn btn-success" id="capture">Iniciar sesión</button>
                 </form>
+                <!-- Enlace para ir al registro -->
+                <p class="mt-3">¿No tienes una cuenta? <a href="/register">Regístrate aquí</a></p>
             </div>
         </div>
-        
     </div>
 
     <script>
@@ -52,7 +61,6 @@
             canvas.getContext('2d').drawImage(video, 0, 0);
             const dataUrl = canvas.toDataURL('image/png');
             document.getElementById('image').value = dataUrl;
-            document.querySelector('form').submit();
         });
     </script>
 
