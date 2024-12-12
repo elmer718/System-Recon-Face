@@ -4,51 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Facial</title>
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4 text-center">
+        <div class="card">
+            <h2>Registrar usuario</h2>
 
-                <h2>Registrar usuario</h2>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="alert">
+                  {{ messages[0] }}
+                </div>
+              {% endif %}
+            {% endwith %}
 
-                <!-- Mensaje de alerta de registro fallido -->
-                {% with messages = get_flashed_messages() %}
-                  {% if messages %}
-                    <div class="alert alert-success">
-                      {{ messages[0] }}
-                    </div>
-                  {% endif %}
-                {% endwith %}
+            <form method="POST" action="/register_face">
+                <div class="form-group">
+                    <label for="user_id">Usuario</label>
+                    <input type="text" id="user_id" name="user_id" required>
+                </div>
 
+                <div class="form-group">
+                    <label for="camera">Capturar imagen</label>
+                    <video id="camera" width="320" height="240" autoplay></video>
+                    <input type="hidden" id="image" name="image">
+                </div>
 
-                <form method="POST" action="/register_face">
-                    <div class="form-group">
-                        <label for="user_id">Usuario</label>
-                        <input type="text" class="form-control" id="user_id" name="user_id" required>
-                    </div>
-                    
-                    <!-- Div para mostrar la cámara y capturar la imagen -->
-                    <div class="form-group">
-                        <label for="camera">Capturar imagen</label>
-                        <video id="camera" width="320" height="240" autoplay></video>
-                        <input type="hidden" id="image" name="image">
-                    </div>
-
-                    <button type="submit" class="btn btn-success" id="capture">Registrar</button>
-                </form>
-            </div>
+                <button type="submit" id="capture">Registrar</button>
+            </form>
         </div>
     </div>
 
     <script>
-        // Código para capturar la imagen de la cámara
         const video = document.getElementById('camera');
-        
-        // Acceder a la cámara
+
         navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
             video.srcObject = stream;
         });
@@ -62,10 +52,5 @@
             document.getElementById('image').value = dataUrl;
         });
     </script>
-
-    <!-- Bootstrap JS y Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
 </body>
 </html>
